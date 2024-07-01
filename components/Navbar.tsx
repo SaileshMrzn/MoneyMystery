@@ -1,25 +1,101 @@
-import React from "react";
-import { HiOutlineMenuAlt2 } from "react-icons/hi";
+"use client";
 
-const Navbar = () => {
+import React, { useState, useEffect, ReactElement } from "react";
+import { HiOutlineMenuAlt2 } from "react-icons/hi";
+import { FaRegMoneyBill1 } from "react-icons/fa6";
+import { RiDashboardFill } from "react-icons/ri";
+import { IoAnalyticsOutline } from "react-icons/io5";
+import { MdOutlineHistory, MdLogout, MdDarkMode } from "react-icons/md";
+import {
+  FaUserGraduate,
+  FaUserNinja,
+  FaUserMd,
+  FaUserInjured,
+  FaUserAstronaut,
+  FaUserSecret,
+} from "react-icons/fa";
+import Image from "next/image";
+
+const Navbar: React.FC = () => {
+  const userIconList: ReactElement[] = [
+    <FaUserGraduate key="FaUserGraduate" />,
+    <FaUserNinja key="FaUserNinja" />,
+    <FaUserMd key="FaUserMd" />,
+    <FaUserInjured key="FaUserInjured" />,
+    <FaUserAstronaut key="FaUserAstro naut" />,
+    <FaUserSecret key="FaUserSecret" />,
+  ];
+
+  const [randomIcon, setRandomIcon] = useState<ReactElement | null>(null);
+
+  useEffect(() => {
+    const randomIndex = Math.floor(Math.random() * userIconList.length);
+    console.log(typeof randomIndex);
+    setRandomIcon(userIconList[randomIndex]);
+  }, []);
+
   return (
     <>
-      <div className="navbar_main flex justify-between items-center w-full h-[10vh] border border-red-900 relative">
-        <div className="navigation flex justify-between w-full border border-blue-500 px-8 items-center">
+      <div className="navbar_main flex justify-between items-center w-full h-[10vh] relative border border-slate-200">
+        <div className="navigation flex justify-between w-full px-8 items-center">
           <HiOutlineMenuAlt2 className="h-8 w-8 rounded-full hover:bg-slate-200 p-1 object-cover cursor-pointer" />
-          <h1>[Title]</h1>
+          <h1 className="text-xl font-bold">
+            <Image
+              src="/mm.png"
+              width={300}
+              height={100}
+              alt="Picture of the author"
+            />
+          </h1>
           <div></div>
         </div>
       </div>
 
-      <div className="navbar_side h-[90vh] w-[18%] border border-green-500 absolute px-4 py-4">
-        <p className="sidebar_content">Add expense</p>
-        <p className="sidebar_content">Dashboard</p>
-        <p className="sidebar_content">Analytics</p>
-        <p className="sidebar_content">History</p>
+      <div className="navbar_side h-[90vh] w-[18%] border border-slate-20 absolute px-4 py-4 flex flex-col justify-between">
+        <div className="section_1">
+          <div className="user_info flex items-center gap-4 px-2 py-1 border-b border-slate-400 pb-5">
+            <div className="border rounded-full border-slate-400 h-10 w-10 flex items-center justify-center scale-125 object-cover">
+              {randomIcon}
+            </div>
+            <div>
+              <p>saileshmaharjan</p>
+              <p className="text-xs">shailesh.mrzn@gmaill.com</p>
+            </div>
+          </div>
+
+          <div className="sidebar_content">
+            <FaRegMoneyBill1 className="icon" />
+            <p>Add Expense</p>
+          </div>
+          <div className="sidebar_content">
+            <RiDashboardFill className="icon" />
+            <p>Dashboard</p>
+          </div>
+          <div className="sidebar_content">
+            <IoAnalyticsOutline className="icon" />
+            <p>Analytics</p>
+          </div>
+          <div className="sidebar_content">
+            <MdOutlineHistory className="icon" />
+            <p>History</p>
+          </div>
+        </div>
+
+        <div className="section_2 border-t border-slate-400">
+          <div className="sidebar_content">
+            <MdLogout className="icon" />
+            <p>Logout</p>
+          </div>
+          <div className="sidebar_content">
+            <MdDarkMode className="icon" />
+            <p>Dark mode</p>
+          </div>
+        </div>
       </div>
     </>
   );
 };
 
 export default Navbar;
+
+//#63855A 	#EDEAE0 	#BBB3DB Crete Round

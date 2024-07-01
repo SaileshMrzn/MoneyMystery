@@ -77,6 +77,10 @@
 
 @layer components {
   .sidebar_content {
-    @apply p-4 my-2 hover:bg-slate-200 rounded-lg cursor-pointer transition-all ease-in-out duration-100;
+    @apply p-4 my-2 hover:bg-slate-200 rounded-lg cursor-pointer transition-all ease-in-out duration-100 flex items-center gap-4;
+
+    .icon {
+      @apply scale-110;
+    }
   }
 }
