@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Inter as FontSans } from "next/font/google";
 import { Crete_Round as FontRound } from "next/font/google";
+import { Manrope as FontManrope } from "next/font/google";
+import { Rubik as FontRubik } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 
@@ -13,6 +15,16 @@ const fontRound = FontRound({
   subsets: ["latin"],
   weight: ["400"],
   variable: "--font-round",
+});
+const fontManrope = FontManrope({
+  subsets: ["latin"],
+  weight: ["200", "300", "400", "500", "600", "700", "800"],
+  variable: "--font-manrope",
+});
+const fontRubik = FontRubik({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800"],
+  variable: "--font-rubik",
 });
 
 export const metadata: Metadata = {
@@ -29,9 +41,11 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={cn(
-          "min-h-screen bg-background font-sans antialiased",
+          "min-h-screen bg-background font-manrope antialiased",
           fontSans.variable,
-          fontRound.variable
+          fontRound.variable,
+          fontManrope.variable,
+          fontRubik.variable
         )}
       >
         {children}

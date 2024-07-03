@@ -19,9 +19,15 @@ const config = {
       },
     },
     extend: {
+      backgroundImage: {
+        leo: "url('/leo2.jpg')",
+        heist: "url('/heist_2160.jpg')",
+      },
       fontFamily: {
         sans: ["var(--font-sans)", ...fontFamily.sans],
         round: ["var(--font-round)"],
+        manrope: ["var(--font-manrope)"],
+        rubik: ["var(--font-rubik)"],
       },
       colors: {
         green: "#63855A",

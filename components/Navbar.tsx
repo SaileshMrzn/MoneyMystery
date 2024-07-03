@@ -42,7 +42,7 @@ const Navbar: React.FC = () => {
           <HiOutlineMenuAlt2 className="h-8 w-8 rounded-full hover:bg-slate-200 p-1 object-cover cursor-pointer" />
           <Image
             src="/mm.png"
-            width={300}
+            width={220}
             height={100}
             alt="Picture of the author"
           />
