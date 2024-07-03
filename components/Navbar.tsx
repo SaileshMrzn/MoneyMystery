@@ -15,6 +15,7 @@ import {
   FaUserSecret,
 } from "react-icons/fa";
 import Image from "next/image";
+import NavLink from "./NavLink";
 
 const Navbar: React.FC = () => {
   const userIconList: ReactElement[] = [
@@ -39,22 +40,20 @@ const Navbar: React.FC = () => {
       <div className="navbar_main flex justify-between items-center w-full h-[10vh] relative border border-slate-200">
         <div className="navigation flex justify-between w-full px-8 items-center">
           <HiOutlineMenuAlt2 className="h-8 w-8 rounded-full hover:bg-slate-200 p-1 object-cover cursor-pointer" />
-          <h1 className="text-xl font-bold">
-            <Image
-              src="/mm.png"
-              width={300}
-              height={100}
-              alt="Picture of the author"
-            />
-          </h1>
+          <Image
+            src="/mm.png"
+            width={300}
+            height={100}
+            alt="Picture of the author"
+          />
           <div></div>
         </div>
       </div>
 
-      <div className="navbar_side h-[90vh] w-[18%] border border-slate-20 absolute px-4 py-4 flex flex-col justify-between">
+      <div className="navbar_side h-[90vh] w-[18%] border border-slate-200 absolute px-4 py-4 flex flex-col justify-between">
         <div className="section_1">
-          <div className="user_info flex items-center gap-4 px-2 py-1 border-b border-slate-400 pb-5">
-            <div className="border rounded-full border-slate-400 h-10 w-10 flex items-center justify-center scale-125 object-cover">
+          <div className="user_info flex items-center gap-4 px-2 pb-6 ">
+            <div className="border border-purple rounded-full h-10 w-10 flex items-center justify-center object-cover scale-110">
               {randomIcon}
             </div>
             <div>
@@ -63,25 +62,27 @@ const Navbar: React.FC = () => {
             </div>
           </div>
 
-          <div className="sidebar_content">
-            <FaRegMoneyBill1 className="icon" />
-            <p>Add Expense</p>
-          </div>
-          <div className="sidebar_content">
-            <RiDashboardFill className="icon" />
-            <p>Dashboard</p>
-          </div>
-          <div className="sidebar_content">
-            <IoAnalyticsOutline className="icon" />
-            <p>Analytics</p>
-          </div>
-          <div className="sidebar_content">
-            <MdOutlineHistory className="icon" />
-            <p>History</p>
+          <div className="routes border-t border-slate-400 pt-1">
+            <NavLink href="/expense" className="sidebar_content">
+              <FaRegMoneyBill1 className="icon" />
+              <p>Add Expense</p>
+            </NavLink>
+            <NavLink href="/dashboard" className="sidebar_content">
+              <RiDashboardFill className="icon" />
+              <p>Dashboard</p>
+            </NavLink>
+            <NavLink href="/analytics" className="sidebar_content">
+              <IoAnalyticsOutline className="icon" />
+              <p>Analytics</p>
+            </NavLink>
+            <NavLink href="/history" className="sidebar_content">
+              <MdOutlineHistory className="icon" />
+              <p>History</p>
+            </NavLink>
           </div>
         </div>
 
-        <div className="section_2 border-t border-slate-400">
+        <div className="section_2 border-t border-slate-400 pt-1">
           <div className="sidebar_content">
             <MdLogout className="icon" />
             <p>Logout</p>
@@ -98,4 +99,4 @@ const Navbar: React.FC = () => {
 
 export default Navbar;
 
-//#63855A 	#EDEAE0 	#BBB3DB Crete Round
+// 	#EDEAE0 	#BBB3DB Crete Round
