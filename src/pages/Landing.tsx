@@ -1,5 +1,5 @@
 import React from "react";
-import Navbar_landing from "@/components/Navbar_landing";
+import Navbar_landing from "@/src/components/Navbar_landing";
 import { GoArrowRight } from "react-icons/go";
 
 const Landing = () => {
