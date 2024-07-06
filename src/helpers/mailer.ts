@@ -2,15 +2,14 @@ import nodemailer from "nodemailer";
 import User from "../models/userModel";
 import bcrypt from "bcryptjs";
 
-export const sendEmail = async ({ emailAddress, emailType, userId }: any) => {
+export const sendEmail = async ({ email, emailType, userId }: any) => {
   try {
-    //todo: configure mail for usage
-    const hashedToken = bcrypt.hash(userId.toString(), 10);
+    const hashedToken = await bcrypt.hash(userId.toString(), 10);
 
     const mailHtml =
       emailType === "verify"
-        ? `<p>Click <a href="localhost:3000/verifyemail?token=${hashedToken}" here to verify your email`
-        : `<p>Click <a href="localhost:3000/forgotPassword?token=${hashedToken}" here to reset your password`;
+        ? `<p>Click <a href="localhost:3000/verifyemail?token=${hashedToken}"> here</a>  to verify your email`
+        : `<p>Click <a href="localhost:3000/forgotPassword?token=${hashedToken}"> here</a> to reset your password`;
 
     if (emailType === "verify") {
       await User.findByIdAndUpdate(userId, {
@@ -34,8 +33,8 @@ export const sendEmail = async ({ emailAddress, emailType, userId }: any) => {
     });
 
     const mailOptions = {
-      from: "saileshmrz@abc.com",
-      to: emailAddress,
+      from: "shailesh.mrzn@gmail.com",
+      to: email,
       subject:
         emailType === "verify" ? "Verify your email" : "Reset your password",
       html: mailHtml,
@@ -43,7 +42,7 @@ export const sendEmail = async ({ emailAddress, emailType, userId }: any) => {
 
     const mailResponse = await transporter.sendMail(mailOptions);
     return mailResponse;
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
+    throw new Error(error.message);
   }
 };

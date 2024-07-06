@@ -6,7 +6,7 @@ import bcrypt from "bcryptjs";
 
 connect();
 
-export default async function POST(request: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
     const reqBody = await request.json();
     const { username, email, password } = reqBody;
@@ -30,7 +30,8 @@ export default async function POST(request: NextRequest) {
     });
 
     const savedNewUser = await newUser.save();
-    console.log(savedNewUser);
+    console.log(savedNewUser.email);
+    console.log(email);
 
     //send verification email
     await sendEmail({ email, emailType: "verify", userId: savedNewUser._id });
@@ -38,6 +39,7 @@ export default async function POST(request: NextRequest) {
     return NextResponse.json({
       message: "User registered successfully",
       success: true,
+      savedNewUser,
     });
   } catch (error: any) {
     return NextResponse.json({ error: error.message });

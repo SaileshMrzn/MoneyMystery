@@ -4,7 +4,7 @@ import { Crete_Round as FontRound } from "next/font/google";
 import { Manrope as FontManrope } from "next/font/google";
 import { Rubik as FontRubik } from "next/font/google";
 import "./globals.css";
-import { cn } from "@/lib/utils";
+import { cn } from "@/src/lib/utils";
 
 const fontSans = FontSans({
   subsets: ["latin"],
