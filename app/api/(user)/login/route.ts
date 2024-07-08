@@ -9,7 +9,7 @@ connect();
 export async function POST(request: NextRequest) {
   try {
     const reqBody = await request.json();
-    const { email } = reqBody;
+    const { email, password } = reqBody;
 
     const user = await User.findOne({ email });
 
@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: "No user found" }, { status: 400 });
     }
 
-    const credentials = await bcrypt.compare(email, user.password);
+    const credentials = await bcrypt.compare(password, user.password);
 
     if (!credentials) {
       return NextResponse.json(

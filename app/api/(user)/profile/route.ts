@@ -8,7 +8,7 @@ connect();
 export async function GET(request: NextRequest) {
   try {
     const userId = dataFromToken(request);
-    const user = await User.findOne({ id: userId }).select("-password");
+    const user = await User.findOne({ _id: userId }).select("-password");
 
     if (!user) {
       NextResponse.json({ message: "No user found" }, { status: 400 });
@@ -17,6 +17,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       message: "User found",
       success: true,
+      data: user,
     });
   } catch (error: any) {
     NextResponse.json({ error: error.message }, { status: 500 });
