@@ -16,6 +16,9 @@ import {
 } from "react-icons/fa";
 import Image from "next/image";
 import NavLink from "./NavLink";
+import axios from "axios";
+import {useSearchParams} from "next/navigation";
+// import { useRouter } from 'next/router';
 
 const Navbar: React.FC = () => {
   const userIconList: ReactElement[] = [
@@ -28,12 +31,31 @@ const Navbar: React.FC = () => {
   ];
 
   const [randomIcon, setRandomIcon] = useState<ReactElement | null>(null);
-
+  const [user, setUser] = useState<any>({});
+  
+  const email: any = useSearchParams()?.get("email")
+  console.log(typeof email);
+  
+    // const router = useRouter();
+    // const { userid } = router.query; 
+    // console.log(userid)
+ 
   useEffect(() => {
     const randomIndex = Math.floor(Math.random() * userIconList.length);
-    console.log(typeof randomIndex);
     setRandomIcon(userIconList[randomIndex]);
+
+    const fetchData = async () => {
+      try {
+        const response = await axios.post("/api/fetchUser", {email});
+        setUser(response.data);
+      } catch (error: any) {
+        console.log(error.message);
+      }
+    };
+    fetchData();
   }, []);
+  
+  console.log(user)
 
   return (
     <>
@@ -57,8 +79,8 @@ const Navbar: React.FC = () => {
               {randomIcon}
             </div>
             <div>
-              <p>saileshmaharjan</p>
-              <p className="text-xs">shailesh.mrzn@gmaill.com</p>
+              <p>{user?.user?.username}</p>
+              <p className="text-xs">{user?.user?.email}</p>
             </div>
           </div>
 
