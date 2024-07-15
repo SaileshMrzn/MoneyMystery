@@ -75,8 +75,11 @@ const Login = () => {
       console.log("Logged in", response.data);
 
       toast.success("Login Successful");
+  
+      const userdata:any = await axios.post("/api/fetchEmail", {email:loginUser.email})
+      const userid = userdata.data.user._id
       
-      router.push(`/expense?email=${loginUser.email}`);
+      router.push(`/${userid}`);
 
       setLoginUser({
         email: "",

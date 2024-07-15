@@ -47,6 +47,7 @@ export default function RootLayout({
           fontManrope.variable,
           fontRubik.variable
         )}
+        suppressHydrationWarning={true}
       >
         {children}
       </body>

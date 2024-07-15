@@ -17,10 +17,10 @@ import {
 import Image from "next/image";
 import NavLink from "./NavLink";
 import axios from "axios";
-import {useSearchParams} from "next/navigation";
-// import { useRouter } from 'next/router';
+import {useSearchParams, usePathname} from "next/navigation";
+import { useRouter } from 'next/router';
 
-const Navbar: React.FC = () => {
+const Navbar = ({ userid }: { userid: String}) => {
   const userIconList: ReactElement[] = [
     <FaUserGraduate key="FaUserGraduate" />,
     <FaUserNinja key="FaUserNinja" />,
@@ -33,20 +33,22 @@ const Navbar: React.FC = () => {
   const [randomIcon, setRandomIcon] = useState<ReactElement | null>(null);
   const [user, setUser] = useState<any>({});
   
-  const email: any = useSearchParams()?.get("email")
-  console.log(typeof email);
+  // const userid: any = useSearchParams()?.get("uid")?.split("/")[0]
+  // console.log(userid);
+  console.log(userid)
   
-    // const router = useRouter();
-    // const { userid } = router.query; 
-    // console.log(userid)
- 
+  // const router = useRouter();
+  // const { userid } = router.query; 
+  // console.log(userid)
+  
   useEffect(() => {
+    
     const randomIndex = Math.floor(Math.random() * userIconList.length);
     setRandomIcon(userIconList[randomIndex]);
 
     const fetchData = async () => {
       try {
-        const response = await axios.post("/api/fetchUser", {email});
+        const response = await axios.post("/api/fetchUser", {userid});
         setUser(response.data);
       } catch (error: any) {
         console.log(error.message);
@@ -85,19 +87,19 @@ const Navbar: React.FC = () => {
           </div>
 
           <div className="routes border-t border-slate-400 pt-1">
-            <NavLink href="/expense" className="sidebar_content">
+            <NavLink href={`/${userid}/expense`} className="sidebar_content">
               <FaRegMoneyBill1 className="icon" />
               <p>Add Expense</p>
             </NavLink>
-            <NavLink href="/dashboard" className="sidebar_content">
+            <NavLink href={`/${userid}/dashboard`} className="sidebar_content">
               <RiDashboardFill className="icon" />
               <p>Dashboard</p>
             </NavLink>
-            <NavLink href="/analytics" className="sidebar_content">
+            <NavLink href={`/${userid}/analytics`} className="sidebar_content">
               <IoAnalyticsOutline className="icon" />
               <p>Analytics</p>
             </NavLink>
-            <NavLink href="/history" className="sidebar_content">
+            <NavLink href={`/${userid}/history`} className="sidebar_content">
               <MdOutlineHistory className="icon" />
               <p>History</p>
             </NavLink>
