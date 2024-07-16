@@ -22,12 +22,10 @@ const Landing = () => {
               Don't worry. We got you covered with our expense tracker.
             </p>
             <Link href="/login">
-            <a href="">
               <button className="border-2 bg-green border-green px-8 py-4 font-bold flex items-center gap-2 hover:translate-x-2 transition-all ease-in-out duration-200 rounded-lg">
                 Start tracking expense
                 <GoArrowRight />
               </button>
-            </a>
             </Link>
           </div>
         </div>
