@@ -17,8 +17,7 @@ import {
 import Image from "next/image";
 import NavLink from "./NavLink";
 import axios from "axios";
-import {useSearchParams, usePathname} from "next/navigation";
-import { useRouter } from 'next/router';
+import {useRouter} from "next/navigation";
 
 const Navbar = ({ userid }: { userid: String}) => {
   const userIconList: ReactElement[] = [
@@ -33,16 +32,21 @@ const Navbar = ({ userid }: { userid: String}) => {
   const [randomIcon, setRandomIcon] = useState<ReactElement | null>(null);
   const [user, setUser] = useState<any>({});
   
-  // const userid: any = useSearchParams()?.get("uid")?.split("/")[0]
-  // console.log(userid);
   console.log(userid)
   
-  // const router = useRouter();
-  // const { userid } = router.query; 
-  // console.log(userid)
+  const router = useRouter();
+
+  const handleLogout = async ()=>{
+    try {
+      await axios.get("/api/logout").then(()=>{
+        router.push("/login")
+      });
+    } catch (error: any) {
+      console.log(error.message)
+    }
+  }
   
-  useEffect(() => {
-    
+  useEffect(() => {  
     const randomIndex = Math.floor(Math.random() * userIconList.length);
     setRandomIcon(userIconList[randomIndex]);
 
@@ -107,7 +111,7 @@ const Navbar = ({ userid }: { userid: String}) => {
         </div>
 
         <div className="section_2 border-t border-slate-400 pt-1">
-          <div className="sidebar_content">
+          <div className="sidebar_content" onClick={handleLogout}>
             <MdLogout className="icon" />
             <p>Logout</p>
           </div>

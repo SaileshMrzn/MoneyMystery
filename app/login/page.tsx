@@ -36,7 +36,7 @@ const Login = () => {
   const [btnDisabled, setBtnDisabled] = useState(false);
   
   const router = useRouter();
-
+   
   useEffect(() => {
     if (
       signupUser.email.length > 0 &&
@@ -78,7 +78,7 @@ const Login = () => {
   
       const userdata:any = await axios.post("/api/fetchEmail", {email:loginUser.email})
       const userid = userdata.data.user._id
-      
+            
       router.push(`/${userid}`);
 
       setLoginUser({

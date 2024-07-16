@@ -9,12 +9,14 @@ const Navbar_landing = ({ className }: { className?: string }) => {
     >
       <div className="navigation flex justify-between w-full items-center">
         <div className="left flex gap-16 items-center">
-          <Image
-            src="/mm.png"
-            width={200}
-            height={100}
-            alt="Picture of the author"
-          />
+          <Link href="/">
+            <Image
+              src="/mm.png"
+              width={200}
+              height={100}
+              alt="Picture of the author"
+            />
+          </Link>
           <div className="quick_access flex gap-10">
             <p className="hover_animation">About Us</p>
             <p className="hover_animation">Contact</p>

@@ -11,6 +11,10 @@ export async function GET() {
       httpOnly: true,
       expires: new Date(0),
     });
+    
+    response.cookies.set("id", "",{
+      httpOnly:true
+    })
 
     return response;
   } catch (error: any) {
