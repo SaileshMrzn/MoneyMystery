@@ -13,7 +13,8 @@ export async function GET() {
     });
     
     response.cookies.set("id", "",{
-      httpOnly:true
+      httpOnly:true,
+      expires: new Date(0)
     })
 
     return response;
