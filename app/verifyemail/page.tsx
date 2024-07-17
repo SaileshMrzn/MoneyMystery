@@ -20,7 +20,7 @@ export default function VerifyEmail() {
     if (!urlToken) {
       setError(true);
     }
-  }, []);
+  }, [urlToken]);
 
   const handleVerify = async () => {
     try {

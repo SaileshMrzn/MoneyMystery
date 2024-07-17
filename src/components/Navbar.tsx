@@ -17,51 +17,51 @@ import {
 import Image from "next/image";
 import NavLink from "./NavLink";
 import axios from "axios";
-import {useRouter} from "next/navigation";
+import { useRouter } from "next/navigation";
 
-const Navbar = ({ userid }: { userid: String}) => {
-  const userIconList: ReactElement[] = [
-    <FaUserGraduate key="FaUserGraduate" />,
-    <FaUserNinja key="FaUserNinja" />,
-    <FaUserMd key="FaUserMd" />,
-    <FaUserInjured key="FaUserInjured" />,
-    <FaUserAstronaut key="FaUserAstro naut" />,
-    <FaUserSecret key="FaUserSecret" />,
-  ];
-
+const Navbar = ({ userid }: { userid: String }) => {
   const [randomIcon, setRandomIcon] = useState<ReactElement | null>(null);
   const [user, setUser] = useState<any>({});
-  
-  console.log(userid)
-  
+
+  console.log(userid);
+
   const router = useRouter();
 
-  const handleLogout = async ()=>{
+  const handleLogout = async () => {
     try {
-      await axios.get("/api/logout").then(()=>{
-        router.push("/login")
+      await axios.get("/api/logout").then(() => {
+        router.push("/login");
       });
     } catch (error: any) {
-      console.log(error.message)
+      console.log(error.message);
     }
-  }
-  
-  useEffect(() => {  
+  };
+
+  useEffect(() => {
+    const userIconList: ReactElement[] = [
+      <FaUserGraduate key="FaUserGraduate" />,
+      <FaUserNinja key="FaUserNinja" />,
+      <FaUserMd key="FaUserMd" />,
+      <FaUserInjured key="FaUserInjured" />,
+      <FaUserAstronaut key="FaUserAstronaut" />,
+      <FaUserSecret key="FaUserSecret" />,
+    ];
+
     const randomIndex = Math.floor(Math.random() * userIconList.length);
     setRandomIcon(userIconList[randomIndex]);
 
     const fetchData = async () => {
       try {
-        const response = await axios.post("/api/fetchUser", {userid});
+        const response = await axios.post("/api/fetchUser", { userid });
         setUser(response.data);
       } catch (error: any) {
         console.log(error.message);
       }
     };
     fetchData();
-  }, []);
-  
-  console.log(user)
+  }, [userid]);
+
+  console.log(user);
 
   return (
     <>

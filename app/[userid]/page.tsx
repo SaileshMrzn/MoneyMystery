@@ -14,12 +14,12 @@ const User = ({ params }: { params: { userid: string } }) => {
       .catch((err) => {
         console.log(err.message);
       });
-  }, []);
+  }, [params.userid]);
 
   return (
     <div className="mx-[20%] mt-4">
-      Hello {user}, hope you're doing good. <br />
-      Let's get started.
+      Hello {user}, hope you&apos;re doing good. <br />
+      Let&apos;s get started.
     </div>
   );
 };
