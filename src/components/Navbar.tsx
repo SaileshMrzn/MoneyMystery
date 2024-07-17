@@ -29,9 +29,8 @@ const Navbar = ({ userid }: { userid: String }) => {
 
   const handleLogout = async () => {
     try {
-      await axios.get("/api/logout").then(() => {
-        router.push("/login");
-      });
+      await axios.get("/api/logout")
+      router.push("/login");
     } catch (error: any) {
       console.log(error.message);
     }
