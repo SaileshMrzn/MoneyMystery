@@ -14,7 +14,7 @@ export function middleware(request: NextRequest) {
           new URL(`/${id}`, request.url)
         );
     }
-    if (!isPublicPath && !token) {
+    if (!isPublicPath && !token && !id) {
       return NextResponse.redirect(new URL("/login", request.url));
     }
 }

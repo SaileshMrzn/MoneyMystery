@@ -9,13 +9,17 @@ export async function GET() {
 
     response.cookies.set("token", "", {
       httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
       expires: new Date(0),
     });
     
-    response.cookies.set("id", "",{
-      httpOnly:true,
-      expires: new Date(0)
-    })
+    response.cookies.set("id", "", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      expires: new Date(0),
+      path: "/",
+    });
 
     return response;
   } catch (error: any) {
