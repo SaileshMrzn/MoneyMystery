@@ -5,7 +5,7 @@ import Link from "next/link";
 const Navbar_landing = ({ className }: { className?: string }) => {
   return (
     <nav
-      className={`navbar_main flex justify-between items-center w-full h-[10vh] px-24 py-8  text-md text-black ${className}`}
+      className={`navbar_main flex justify-between items-center w-full h-[10vh] px-32 py-8  text-md text-black ${className}`}
     >
       <div className="navigation flex justify-between w-full items-center">
         <div className="left flex gap-16 items-center">
