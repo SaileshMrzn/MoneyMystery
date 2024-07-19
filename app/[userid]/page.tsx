@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 
 const User = ({ params }: { params: { userid: string } }) => {
   const [user, setUser] = useState("");
+    
   useEffect(() => {
     axios
       .post("/api/fetchUser", { userid: params.userid })
@@ -17,7 +18,7 @@ const User = ({ params }: { params: { userid: string } }) => {
   }, [params.userid]);
 
   return (
-    <div className="mx-[20%] mt-4">
+    <div>
       Hello {user}, hope you&apos;re doing good. <br />
       Let&apos;s get started.
     </div>

@@ -104,7 +104,7 @@ const Login = () => {
     <div className="flex flex-col justify-center items-center h-screen">
       <Navbar_landing className="fixed top-0" />
       <Suspense fallback={<Loading/>}>
-        <Tabs defaultValue="login" className="w-[400px]">
+        <Tabs defaultValue="login" className="md:w-[400px] w-[300px]">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="login">Login</TabsTrigger>
             <TabsTrigger value="signup">Signup</TabsTrigger>

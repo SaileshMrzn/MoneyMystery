@@ -5,6 +5,7 @@ import { Manrope as FontManrope } from "next/font/google";
 import { Rubik as FontRubik } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/src/lib/utils";
+import { AppWrapper } from "@/src/context";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -49,7 +50,9 @@ export default function RootLayout({
         )}
         suppressHydrationWarning={true}
       >
+        <AppWrapper>
         {children}
+        </AppWrapper>
       </body>
     </html>
   );
