@@ -21,9 +21,9 @@ export default function LoggedInLayout({
         <div
           className={`${
             state === true
-              ? "opacity-0 md:mx-[22%] md:opacity-100"
-              : "opacity-100 mx-10"
-          } mt-4 transition-all ease-in-out duration-500`}
+              ? "opacity-0 md:px-[22%] md:opacity-100"
+              : "opacity-100 px-10"
+          } pt-4 transition-all ease-in-out duration-500 dark:bg-[#22223b] min-h-[90vh]`}
         >
           {children}
         </div>

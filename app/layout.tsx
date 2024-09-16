@@ -6,6 +6,7 @@ import { Rubik as FontRubik } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/src/lib/utils";
 import { AppWrapper } from "@/src/context";
+import { ThemeProvider } from "@/src/components/theme-provider";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -39,7 +40,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={cn(
           "min-h-screen bg-background font-manrope antialiased",
@@ -48,11 +49,15 @@ export default function RootLayout({
           fontManrope.variable,
           fontRubik.variable
         )}
-        suppressHydrationWarning={true}
       >
-        <AppWrapper>
-        {children}
-        </AppWrapper>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <AppWrapper>{children}</AppWrapper>
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -5,16 +5,20 @@ import React, { useEffect, useState } from "react";
 
 const User = ({ params }: { params: { userid: string } }) => {
   const [user, setUser] = useState("");
-    
+
   useEffect(() => {
-    axios
-      .post("/api/fetchUser", { userid: params.userid })
-      .then((res) => {
-        setUser(res.data.user.username);
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
+    const fetchUser = async () => {
+      await axios
+        .post("/api/fetchUser", { userid: params.userid })
+        .then((res) => {
+          setUser(res.data.user.username);
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
+    };
+
+    fetchUser();
   }, [params.userid]);
 
   return (

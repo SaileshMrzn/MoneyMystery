@@ -19,6 +19,7 @@ import NavLink from "./NavLink";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useAppContext } from "../context";
+import Switch from "@/src/components/ui/switch";
 
 const Navbar = ({ userid }: { userid: String }) => {
   const [randomIcon, setRandomIcon] = useState<ReactElement | null>(null);
@@ -69,9 +70,12 @@ const Navbar = ({ userid }: { userid: String }) => {
 
   return (
     <>
-      <div className="navbar_main flex justify-between items-center w-full h-[10vh] relative border border-slate-200">
+      <div className="navbar_main flex justify-between items-center w-full h-[10vh] relative border border-slate-200 dark:bg-[#22223b]">
         <div className="navigation flex justify-between w-full px-8 items-center">
-          <HiOutlineMenuAlt2 className="h-8 w-8 rounded-full hover:bg-slate-200 p-1 object-cover cursor-pointer" onClick={()=>setSidenav(!sidenav)} />
+          <HiOutlineMenuAlt2
+            className="h-8 w-8 rounded-full hover:bg-slate-200 dark:hover:bg-slate-600 p-1 object-cover cursor-pointer"
+            onClick={() => setSidenav(!sidenav)}
+          />
           <Image
             src="/mm.png"
             width={220}
@@ -82,7 +86,11 @@ const Navbar = ({ userid }: { userid: String }) => {
         </div>
       </div>
 
-      <div className={`${sidenav? "translate-x-0":"-translate-x-full"} navbar_side h-[90vh] w-[50%] md:w-[20%] border border-slate-200 absolute px-4 py-4 flex flex-col justify-between transition-all ease-in-out duration-500`}>
+      <div
+        className={`${
+          sidenav ? "translate-x-0" : "-translate-x-full"
+        } navbar_side h-[90vh] w-[50%] md:w-[20%] border border-x-slate-200 absolute px-4 py-4 flex flex-col justify-between transition-all ease-in-out duration-500 dark:bg-[#22223b]`}
+      >
         <div className="section_1">
           <div className="user_info flex items-center gap-4 px-2 pb-6 ">
             <div className="border border-purple rounded-full h-10 w-10 flex items-center justify-center object-cover scale-110">
@@ -122,6 +130,7 @@ const Navbar = ({ userid }: { userid: String }) => {
           <div className="sidebar_content">
             <MdDarkMode className="icon" />
             <p>Dark mode</p>
+            <Switch />
           </div>
         </div>
       </div>
