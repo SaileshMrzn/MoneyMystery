@@ -92,11 +92,11 @@ const Navbar = ({ userid }: { userid: String }) => {
         } navbar_side h-[90vh] w-[50%] md:w-[20%] border border-x-slate-200 absolute px-4 py-4 flex flex-col justify-between transition-all ease-in-out duration-500 dark:bg-[#22223b]`}
       >
         <div className="section_1">
-          <div className="user_info flex items-center gap-4 px-2 pb-6 ">
-            <div className="border border-purple rounded-full h-10 w-10 flex items-center justify-center object-cover scale-110">
+          <div className="user_info flex items-center gap-4 px-2 pb-3">
+            <div className="border border-purple rounded-full h-12 w-12 items-center justify-center object-cover hidden md:flex">
               {randomIcon}
             </div>
-            <div>
+            <div className="-mt-2">
               <p>{user?.user?.username}</p>
               <p className="text-xs">{user?.user?.email}</p>
             </div>
@@ -128,8 +128,8 @@ const Navbar = ({ userid }: { userid: String }) => {
             <p>Logout</p>
           </div>
           <div className="sidebar_content">
-            <MdDarkMode className="icon" />
-            <p>Dark mode</p>
+            <MdDarkMode className="icon hidden md:block" />
+            <p className="hidden md:block">Dark mode</p>
             <Switch />
           </div>
         </div>
