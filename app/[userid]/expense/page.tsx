@@ -35,6 +35,7 @@ const formSchema = z.object({
 const Expense = () => {
   const queryClient = useQueryClient();
 
+  // fetch category data
   const {
     isPending,
     error,
@@ -47,12 +48,15 @@ const Expense = () => {
 
   const [addCategory, setAddCategory] = useState(false);
   const [addCategoryValue, setAddCategoryValue] = useState("");
+  const [amount, setAmount] = useState("");
+  const [category, setCategory] = useState("");
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {},
   });
 
+  // add new category
   const mutation = useMutation({
     mutationFn: (newCategory: { name: string }) => {
       return axios.post("/api/addCategory", newCategory);
@@ -66,12 +70,26 @@ const Expense = () => {
     },
   });
 
+  // add new expense
+  const addExpense = useMutation({
+    mutationFn: (newExpense: { amount: string; category: string }) => {
+      return axios.post("/api/addExpense", newExpense);
+    },
+    onSuccess: () => {
+      toast.success("Expense added successfully");
+    },
+    onError: () => {
+      toast.error("Something went wrong");
+    },
+  });
+
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
+    addExpense.mutate({ amount, category });
   }
 
   const handleAddCategory = () => {
-    if(addCategoryValue){
+    if (addCategoryValue) {
       mutation.mutate({ name: addCategoryValue });
     }
     setAddCategory(false);
@@ -81,6 +99,7 @@ const Expense = () => {
     <div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          {/* amount input */}
           <FormField
             control={form.control}
             name="amount"
@@ -92,6 +111,10 @@ const Expense = () => {
                     placeholder="Enter amount"
                     {...field}
                     className="focus:!ring-transparent"
+                    onChange={(e) => {
+                      setAmount(e.target.value);
+                      field.onChange(e);
+                    }}
                   />
                 </FormControl>
                 <FormMessage />
@@ -110,7 +133,10 @@ const Expense = () => {
                   <FormControl>
                     <div className="flex items-center gap-4">
                       <Select
-                        onValueChange={(value) => field.onChange(value)}
+                        onValueChange={(value) => {
+                          field.onChange(value);
+                          setCategory(value);
+                        }}
                         defaultValue={field.value}
                       >
                         <SelectTrigger className="w-[180px] focus:!ring-transparent">
