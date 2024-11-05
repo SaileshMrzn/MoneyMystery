@@ -8,7 +8,6 @@ import { Button } from "@/src/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -23,24 +22,60 @@ import {
   SelectValue,
 } from "@/src/components/ui/select";
 import { GoPlus, GoCheck } from "react-icons/go";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
+import toast, { Toaster } from "react-hot-toast";
 
 const formSchema = z.object({
   amount: z.string(),
   selectCategory: z.string(),
-  addCategory: z.string(),
+  addCategory: z.string().optional(),
 });
 
 const Expense = () => {
+  const queryClient = useQueryClient();
+
+  const {
+    isPending,
+    error,
+    data: categories,
+  } = useQuery({
+    queryKey: ["categoryData"],
+    queryFn: () =>
+      axios.get("/api/getCategories").then((res) => res.data.categories),
+  });
+
   const [addCategory, setAddCategory] = useState(false);
+  const [addCategoryValue, setAddCategoryValue] = useState("");
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {},
   });
 
+  const mutation = useMutation({
+    mutationFn: (newCategory: { name: string }) => {
+      return axios.post("/api/addCategory", newCategory);
+    },
+    onSuccess: () => {
+      toast.success("Category added successfully");
+      queryClient.invalidateQueries({ queryKey: ["categoryData"] });
+    },
+    onError: () => {
+      toast.error("Something went wrong");
+    },
+  });
+
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
   }
+
+  const handleAddCategory = () => {
+    if(addCategoryValue){
+      mutation.mutate({ name: addCategoryValue });
+    }
+    setAddCategory(false);
+  };
 
   return (
     <div>
@@ -79,12 +114,27 @@ const Expense = () => {
                         defaultValue={field.value}
                       >
                         <SelectTrigger className="w-[180px] focus:!ring-transparent">
-                          <SelectValue placeholder="Category" />
+                          <SelectValue placeholder="Select category" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="light">Light</SelectItem>
-                          <SelectItem value="dark">Dark</SelectItem>
-                          <SelectItem value="system">System</SelectItem>
+                          {error && (
+                            <p className="text-sm p-2">Error Occured</p>
+                          )}
+                          {isPending && (
+                            <p className="text-sm p-2">Fetching...</p>
+                          )}
+
+                          {categories?.map(
+                            (category: { name: string; id: string }) => (
+                              <SelectItem
+                                key={category.id}
+                                value={category.name}
+                                className="cursor-pointer"
+                              >
+                                {category.name}
+                              </SelectItem>
+                            )
+                          )}
                         </SelectContent>
                       </Select>
                       {!addCategory && (
@@ -98,7 +148,7 @@ const Expense = () => {
                         <GoCheck
                           size={30}
                           className="rounded-full hover:bg-purple p-1 hover:text-white text-purple cursor-pointer ease-in-out transition-all duration-300 z-20"
-                          onClick={() => setAddCategory(false)}
+                          onClick={handleAddCategory}
                         />
                       )}
                     </div>
@@ -122,7 +172,15 @@ const Expense = () => {
                   <FormItem>
                     <FormLabel>Add Category</FormLabel>
                     <FormControl>
-                      <Input placeholder="Add new category" {...field} className="focus:!ring-transparent"/>
+                      <Input
+                        placeholder="Add new category"
+                        {...field}
+                        className="focus:!ring-transparent"
+                        onChange={(e) => {
+                          setAddCategoryValue(e.target.value);
+                          field.onChange(e);
+                        }}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -134,6 +192,12 @@ const Expense = () => {
           <Button type="submit">Done</Button>
         </form>
       </Form>
+      <Toaster
+        position="bottom-right"
+        toastOptions={{
+          className: "text-sm",
+        }}
+      />
     </div>
   );
 };
