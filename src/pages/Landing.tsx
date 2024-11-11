@@ -18,10 +18,11 @@ const Landing = () => {
         <div className="text_container relative z-10 text-white flex md:justify-center items-center h-full">
           <div className="text w-[85%] flex flex-col gap-8 justify-center items-start md:items-center text-left md:text-center">
             <p className="lg:text-6xl md:text-5xl text-4xl leading-[3rem]">
-              Wondering where all your money went?
+              Stay on top of your finances
             </p>
             <p className="lg:text-xl md:text-base leading-7">
-              Don&apos;t worry. We got you covered with our expense tracker.
+              Our expense tracker makes budgeting, tracking, and saving simple
+              and effective.
             </p>
             <Link href="/login">
               <button className="border-2 bg-green border-green p-4 md:px-8 md:py-4 font-bold flex items-center gap-2 hover:translate-x-2 transition-all ease-in-out duration-200 rounded-lg text-sm lg:text-base">
