@@ -6,9 +6,16 @@ connect();
 
 export async function POST(request: NextRequest) {
   try {
-    const { amount, category } = await request.json();
+    const { amount, category, userId } = await request.json();
 
-    const newExpense = new Expense({ amount, category });
+    if (!userId) {
+      return NextResponse.json({
+        success: false,
+        message: "User ID is required",
+      });
+    }
+    
+    const newExpense = new Expense({ amount, category, userId });
     await newExpense.save();
 
     return NextResponse.json({
