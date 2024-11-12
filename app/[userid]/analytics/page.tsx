@@ -62,7 +62,7 @@ const chartConfig = {
   // },
 } satisfies ChartConfig;
 
-const Analytics = () => {
+const Analytics = ({ params }: { params: { userid: string } }) => {
   const [chartData, setChartData] = useState<ChartDataItem[]>([]);
 
   const {
@@ -72,7 +72,7 @@ const Analytics = () => {
   } = useQuery<Expense[]>({
     queryKey: ["expensesData"],
     queryFn: () =>
-      axios.get("/api/getExpenses").then((res) => res.data.expenses),
+      axios.get(`/api/getExpenses/${params.userid}`).then((res) => res.data.expenses),
   });
 
   const getRandomColor = () => {
@@ -84,20 +84,45 @@ const Analytics = () => {
     return color;
   };
 
-  useEffect(() => {
-    if (expenses) {
-      const newExpenses: ChartDataItem[] = expenses.map((expense) => ({
-        category: expense.category,
-        amount: parseFloat(expense.amount),
-        fill: getRandomColor(),
-      }));
-      setChartData(newExpenses);
-      
-    }
+useEffect(() => {
+  if (expenses && expenses.length > 0) {
+    const groupedExpenses = expenses.reduce<Record<string, ChartDataItem>>(
+      (acc, expense) => {
+        const category = expense.category;
+        const amount = parseFloat(expense.amount);
+        
+
+        if (acc[category]) {
+          // Add to existing category's amount
+          acc[category].amount += amount;
+        } else {
+          // Create a new entry for the category
+          acc[category] = {
+            category,
+            amount,
+            fill: getRandomColor(),
+          };
+        }
+
+        return acc;
+      },
+      {} // Initial value of the accumulator
+    );
     
-  }, [expenses]);
-  
-  const totalExpense: number = chartData.reduce((acc, expense)=>acc+expense.amount, 0);
+    console.log(groupedExpenses)
+
+    // Convert the grouped object back to an array
+    const newExpenses: ChartDataItem[] = Object.values(groupedExpenses);
+
+    setChartData(newExpenses);
+  }
+}, [expenses]);
+
+
+  const totalExpense: number = chartData.reduce(
+    (acc, expense) => acc + expense.amount,
+    0
+  );
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error loading expenses</div>;
@@ -169,5 +194,7 @@ const Analytics = () => {
     </Card>
   );
 };
+
+
 
 export default Analytics;

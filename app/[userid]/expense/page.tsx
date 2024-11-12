@@ -32,8 +32,10 @@ const formSchema = z.object({
   addCategory: z.string().optional(),
 });
 
-const Expense = () => {
+const Expense = ({ params }: { params: { userid: string } }) => {
   const queryClient = useQueryClient();
+
+  console.log(params.userid);
 
   // fetch category data
   const {
@@ -43,7 +45,7 @@ const Expense = () => {
   } = useQuery({
     queryKey: ["categoryData"],
     queryFn: () =>
-      axios.get("/api/getCategories").then((res) => res.data.categories),
+      axios.get(`/api/getCategories/${params.userid}`).then((res) => res.data.categories),
   });
 
   const [addCategory, setAddCategory] = useState(false);
@@ -53,30 +55,45 @@ const Expense = () => {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {},
+    defaultValues: {
+      amount: "",
+      selectCategory: "",
+      addCategory: "",
+    },
   });
 
   // add new category
   const mutation = useMutation({
-    mutationFn: (newCategory: { name: string }) => {
+    mutationFn: (newCategory: { name: string, userId:string }) => {
       return axios.post("/api/addCategory", newCategory);
     },
     onSuccess: () => {
       toast.success("Category added successfully");
+      setAddCategoryValue("")
+      form.setValue("addCategory", "");
       queryClient.invalidateQueries({ queryKey: ["categoryData"] });
     },
-    onError: () => {
-      toast.error("Something went wrong");
+    onError: (error:any) => {
+      if (
+        error.response.data
+      ) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("Something went wrong");
+      }
     },
   });
 
   // add new expense
   const addExpense = useMutation({
-    mutationFn: (newExpense: { amount: string; category: string }) => {
+    mutationFn: (newExpense: { amount: string; category: string, userId:string }) => {
       return axios.post("/api/addExpense", newExpense);
     },
     onSuccess: () => {
       toast.success("Expense added successfully");
+      setCategory("");
+      setAmount("")
+      form.reset(); 
     },
     onError: () => {
       toast.error("Something went wrong");
@@ -85,12 +102,12 @@ const Expense = () => {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
-    addExpense.mutate({ amount, category });
+    addExpense.mutate({ amount, category, userId:params.userid });
   }
 
   const handleAddCategory = () => {
     if (addCategoryValue) {
-      mutation.mutate({ name: addCategoryValue });
+      mutation.mutate({ name: addCategoryValue, userId:params.userid });
     }
     setAddCategory(false);
   };
@@ -144,7 +161,7 @@ const Expense = () => {
                         </SelectTrigger>
                         <SelectContent>
                           {error && (
-                            <p className="text-sm p-2">Error Occured</p>
+                            <p className="text-sm p-2">Error occured</p>
                           )}
                           {isPending && (
                             <p className="text-sm p-2">Fetching...</p>

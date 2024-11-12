@@ -4,7 +4,6 @@ const categorySchema = new mongoose.Schema({
   name: {
     type: String,
     required: [true, "Category name is required"],
-    unique: [true, "Category already exists"],
   },
   userId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -12,6 +11,9 @@ const categorySchema = new mongoose.Schema({
     required: [true, "User ID is required"],
   },
 });
+
+// Create a compound unique index on name and userId
+categorySchema.index({ name: 1, userId: 1 }, { unique: true });
 
 const Category =
   mongoose.models.category || mongoose.model("category", categorySchema);

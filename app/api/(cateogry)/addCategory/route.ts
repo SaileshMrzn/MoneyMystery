@@ -14,16 +14,15 @@ export async function POST(request: NextRequest) {
         message: "User ID is required",
       });
     }
-
-    const categoryAlredyExists = await Category.findOne({ name, userId });
-
-    if (categoryAlredyExists) {
-      return NextResponse.json(
-        { error: "Category already exists" },
-        { status: 400 }
-      );
+    
+    const existingCategory = await Category.findOne({ name, userId });
+    if (existingCategory) {
+      return NextResponse.json({
+        success: false,
+        message: "Category already exists for this user",
+      },{status:500});
     }
-
+    
     const newCategory = new Category({ name, userId });
     await newCategory.save();
 
