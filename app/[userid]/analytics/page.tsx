@@ -19,6 +19,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/src/components/ui/chart";
+import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 
 // Define the type for an expense
 interface Expense {
@@ -36,14 +37,18 @@ interface ChartDataItem {
   fill: string;
 }
 
+interface GroupedExpenses {
+  [yearMonth: string]: Expense[];
+}
+
 const chartConfig = {
   amount: {
     label: "Amount",
   },
-  // Personal: {
-  //   label: "personal",
-  //   color: "#ede21c",
-  // },
+  Personal: {
+    label: "Personal",
+    color: "#ede21c",
+  },
   // safari: {
   //   label: "Safari",
   //   color: "#ede21c",
@@ -64,6 +69,8 @@ const chartConfig = {
 
 const Analytics = ({ params }: { params: { userid: string } }) => {
   const [chartData, setChartData] = useState<ChartDataItem[]>([]);
+  const [currentMonth, setCurrentMonth] = useState<string>(""); // Current year-month
+  const [groupedExpenses, setGroupedExpenses] = useState<GroupedExpenses>({}); // All grouped expenses
 
   const {
     data: expenses,
@@ -72,7 +79,9 @@ const Analytics = ({ params }: { params: { userid: string } }) => {
   } = useQuery<Expense[]>({
     queryKey: ["expensesData"],
     queryFn: () =>
-      axios.get(`/api/getExpenses/${params.userid}`).then((res) => res.data.expenses),
+      axios
+        .get(`/api/getExpenses/${params.userid}`)
+        .then((res) => res.data.expenses),
   });
 
   const getRandomColor = () => {
@@ -84,19 +93,36 @@ const Analytics = ({ params }: { params: { userid: string } }) => {
     return color;
   };
 
-useEffect(() => {
-  if (expenses && expenses.length > 0) {
-    const groupedExpenses = expenses.reduce<Record<string, ChartDataItem>>(
-      (acc, expense) => {
+  // Group expenses by year and month
+  useEffect(() => {
+    if (expenses && expenses.length > 0) {
+      const grouped: GroupedExpenses = expenses.reduce((acc, expense) => {
+        const yearMonth = new Date(expense.createdAt).toISOString().slice(0, 7); // YYYY-MM format
+        if (!acc[yearMonth]) acc[yearMonth] = [];
+        acc[yearMonth].push(expense);
+        return acc;
+      }, {} as GroupedExpenses);
+
+      setGroupedExpenses(grouped);
+
+      // Set current month as default
+      const currentDate = new Date().toISOString().slice(0, 7);
+      setCurrentMonth(currentDate);
+    }
+  }, [expenses]);
+
+  // Update chart data when current month changes
+  useEffect(() => {
+    if (currentMonth && groupedExpenses[currentMonth]) {
+      const grouped = groupedExpenses[currentMonth].reduce<
+        Record<string, ChartDataItem>
+      >((acc, expense) => {
         const category = expense.category;
         const amount = parseFloat(expense.amount);
-        
 
         if (acc[category]) {
-          // Add to existing category's amount
           acc[category].amount += amount;
         } else {
-          // Create a new entry for the category
           acc[category] = {
             category,
             amount,
@@ -105,34 +131,99 @@ useEffect(() => {
         }
 
         return acc;
-      },
-      {} // Initial value of the accumulator
-    );
-    
-    console.log(groupedExpenses)
+      }, {});
 
-    // Convert the grouped object back to an array
-    const newExpenses: ChartDataItem[] = Object.values(groupedExpenses);
-
-    setChartData(newExpenses);
-  }
-}, [expenses]);
-
+      // Convert grouped object to array
+      setChartData(Object.values(grouped));
+    }
+  }, [currentMonth, groupedExpenses]);
 
   const totalExpense: number = chartData.reduce(
     (acc, expense) => acc + expense.amount,
     0
   );
 
+  // Handlers for navigation
+  const handlePreviousMonth = () => {
+    if (!currentMonth) return;
+    const date = new Date(currentMonth + "-01");
+    date.setMonth(date.getMonth() - 1);
+    const prevMonth = date.toISOString().slice(0, 7);
+
+    // Check if data exists for the previous month
+    if (groupedExpenses[prevMonth]) {
+      setCurrentMonth(prevMonth);
+    }
+  };
+
+  const handleNextMonth = () => {
+    if (!currentMonth) return;
+    const date = new Date(currentMonth + "-01");
+    date.setMonth(date.getMonth() + 1);
+    const nextMonth = date.toISOString().slice(0, 7);
+
+    // Check if data exists for the next month
+    if (groupedExpenses[nextMonth]) {
+      setCurrentMonth(nextMonth);
+    }
+  };
+
+  // Check if the previous and next buttons should be disabled
+  const isPreviousDisabled =
+    !groupedExpenses[currentMonth] ||
+    !groupedExpenses[
+      new Date(
+        new Date(currentMonth + "-01").setMonth(
+          new Date(currentMonth + "-01").getMonth() - 1
+        )
+      )
+        .toISOString()
+        .slice(0, 7)
+    ];
+  const isNextDisabled =
+    !groupedExpenses[currentMonth] ||
+    !groupedExpenses[
+      new Date(
+        new Date(currentMonth + "-01").setMonth(
+          new Date(currentMonth + "-01").getMonth() + 1
+        )
+      )
+        .toISOString()
+        .slice(0, 7)
+    ];
+
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error loading expenses</div>;
 
   return (
-    <Card className="flex flex-col">
-      {/* <CardHeader className="items-center pb-0">
-        <CardTitle>Pie Chart - Donut with Text</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
-      </CardHeader> */}
+    <Card className="flex flex-col w-[75vw]">
+      <CardHeader className="items-center pb-0">
+        <div className="flex justify-between items-center mb-4 w-full">
+          <button
+            onClick={handlePreviousMonth}
+            className="btn"
+            disabled={isPreviousDisabled}
+          >
+            <MdKeyboardArrowLeft
+              size={25}
+              color={`${isPreviousDisabled ? "gray" : "black"}`}
+            />
+          </button>
+          <div className="flex flex-col justify-center items-center gap-4">
+            <CardTitle>Expense Chart - {currentMonth}</CardTitle>
+          </div>
+          <button
+            onClick={handleNextMonth}
+            className="btn"
+            disabled={isNextDisabled}
+          >
+            <MdKeyboardArrowRight
+              size={25}
+              color={`${isNextDisabled ? "gray" : "black"}`}
+            />
+          </button>
+        </div>
+      </CardHeader>
       <CardContent className="flex-1 pb-0">
         <ChartContainer
           config={chartConfig}
@@ -194,7 +285,5 @@ useEffect(() => {
     </Card>
   );
 };
-
-
 
 export default Analytics;
