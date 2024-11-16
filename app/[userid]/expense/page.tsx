@@ -160,9 +160,9 @@ const Expense = ({ params }: { params: { userid: string } }) => {
                           <SelectValue placeholder="Select category" />
                         </SelectTrigger>
                         <SelectContent>
-                          {error && (
+                          {/* {error && (
                             <p className="text-sm p-2">Error occured</p>
-                          )}
+                          )} */}
                           {isPending && (
                             <p className="text-sm p-2">Fetching...</p>
                           )}
@@ -177,6 +177,10 @@ const Expense = ({ params }: { params: { userid: string } }) => {
                                 {category.name}
                               </SelectItem>
                             )
+                          )}
+
+                          {!isPending && !categories && (
+                            <p className="text-sm p-2">No categories</p>
                           )}
                         </SelectContent>
                       </Select>

@@ -40,6 +40,10 @@ const Login = () => {
     username: "",
     password: "",
   });
+  const [errors2, setErrors2] = useState({
+    email: "",
+    password: "",
+  });
   const [btnDisabled, setBtnDisabled] = useState(false);
   const [signUpLoading, setSignUpLoading] = useState(false);
   const [loginLoading, setLoginLoading] = useState(false);
@@ -83,6 +87,27 @@ const Login = () => {
 
     return isValid;
   };
+  
+  const validateLogin = () => {
+    const validationErrors = { email: "", password: "" };
+    let isValid = true;
+
+    // Validate email
+    if (!loginUser.email) {
+      validationErrors.email = "Email is required.";
+      isValid = false;
+    }
+
+    // Validate password
+    if (!loginUser.password) {
+      validationErrors.password = "Password is required.";
+      isValid = false;
+    } 
+
+    setErrors2(validationErrors);
+
+    return isValid;
+  };
 
   useEffect(() => {
     if (
@@ -119,7 +144,7 @@ const Login = () => {
   };
 
   const handleLogin = async () => {
-    if (validateSignUp()) {
+    if (validateLogin()) {
       try {
         setLoginLoading(true);
         const response = await axios.post("/api/login", loginUser);
@@ -184,8 +209,8 @@ const Login = () => {
                       setLoginUser({ ...loginUser, email: e.target.value });
                     }}
                   />
-                  {errors.email && (
-                    <p className="text-sm text-red-400">{errors.email}</p>
+                  {errors2.email && (
+                    <p className="text-sm text-red-400">{errors2.email}</p>
                   )}
                 </div>
                 <div className="space-y-1">
@@ -198,8 +223,8 @@ const Login = () => {
                       setLoginUser({ ...loginUser, password: e.target.value });
                     }}
                   />
-                  {errors.password && (
-                    <p className="text-sm text-red-400">{errors.password}</p>
+                  {errors2.password && (
+                    <p className="text-sm text-red-400">{errors2.password}</p>
                   )}
                 </div>
                 <div className="space-y-1 flex justify-between text-sm text-muted-foreground items-center pt-1">
