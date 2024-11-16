@@ -193,7 +193,7 @@ const Analytics = ({ params }: { params: { userid: string } }) => {
     ];
 
   if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error loading expenses</div>;
+  if (error) return <div>Error loading expenses. Try adding some first.</div>;
 
   return (
     <Card className="flex flex-col w-[75vw]">
