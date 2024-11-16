@@ -23,11 +23,11 @@ const Navbar_landing = ({ className }: { className?: string }) => {
               alt="Picture of the author"
             />
           </Link>
-          <div className="quick_access hidden lg:flex gap-10">
+          {/* <div className="quick_access hidden lg:flex gap-10">
             <p className="hover_animation">About Us</p>
             <p className="hover_animation">Contact</p>
             <p className="hover_animation">Services</p>
-          </div>
+          </div> */}
         </div>
         <div className="right flex gap-8 items-center">
           <div className="login hidden lg:flex gap-8">
@@ -62,11 +62,11 @@ const Navbar_landing = ({ className }: { className?: string }) => {
           onClick={() => setMenubar(false)}
         />
 
-        <ul className="flex flex-col gap-6 pt-4">
+        {/* <ul className="flex flex-col gap-6 pt-4">
           <li className="hover_animation w-fit">About Us</li>
           <li className="hover_animation w-fit">Contact</li>
           <li className="hover_animation w-fit">Services</li>
-        </ul>
+        </ul> */}
 
         <div className="buttons mt-6">
           <Link href="/login">
