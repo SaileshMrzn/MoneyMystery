@@ -22,8 +22,8 @@ import Navbar_landing from "@/src/components/Navbar_landing";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import {Suspense} from 'react';
-import Loading from '../loading'
+import { Suspense } from "react";
+import Loading from "../loading";
 
 const Login = () => {
   const [signupUser, setSignupUser] = useState({
@@ -35,9 +35,54 @@ const Login = () => {
     email: "",
     password: "",
   });
+  const [errors, setErrors] = useState({
+    email: "",
+    username: "",
+    password: "",
+  });
   const [btnDisabled, setBtnDisabled] = useState(false);
+  const [signUpLoading, setSignUpLoading] = useState(false);
+  const [loginLoading, setLoginLoading] = useState(false);
 
   const router = useRouter();
+
+  const validateSignUp = () => {
+    const validationErrors = { email: "", username: "", password: "" };
+    let isValid = true;
+
+    // Validate email
+    if (!signupUser.email || !loginUser.email) {
+      validationErrors.email = "Email is required.";
+      isValid = false;
+    } else {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(signupUser.email)) {
+        validationErrors.email = "Invalid email format.";
+        isValid = false;
+      }
+    }
+
+    // Validate username
+    if (!signupUser.username) {
+      validationErrors.username = "Username is required.";
+      isValid = false;
+    }
+
+    // Validate password
+    if (!signupUser.password || !loginUser.password) {
+      validationErrors.password = "Password is required.";
+      isValid = false;
+    } else if (signupUser.password.length < 6) {
+      validationErrors.password =
+        "Password must be at least 6 characters long.";
+      isValid = false;
+    }
+
+    // Update the errors state
+    setErrors(validationErrors);
+
+    return isValid;
+  };
 
   useEffect(() => {
     if (
@@ -49,61 +94,72 @@ const Login = () => {
     } else {
       setBtnDisabled(true);
     }
-    
-    setTimeout(()=>{
-      
-    }, 5000)
-    
+
+    setTimeout(() => {}, 5000);
   }, [signupUser]);
 
   const handleSignup = async () => {
-    try {
-      const response = await axios.post("/api/signup", signupUser);
-
-      console.log("Signed up", response.data);
-
-      toast.success("Signup Successful");
-
-      setSignupUser({
-        email: "",
-        username: "",
-        password: "",
-      });
-    } catch (error: any) {
-      console.log(error.message);
-      toast.error("Something went wrong");
+    if (validateSignUp()) {
+      try {
+        setSignUpLoading(true);
+        const response = await axios.post("/api/signup", signupUser);
+        setSignupUser({
+          email: "",
+          username: "",
+          password: "",
+        });
+        toast.success("Signup Successful");
+      } catch (error: any) {
+        console.log(error.response.data);
+        toast.error(error.response?.data?.error || "Something went wrong");
+      } finally {
+        setSignUpLoading(false);
+      }
     }
   };
 
   const handleLogin = async () => {
-    try {
-      const response = await axios.post("/api/login", loginUser);
-
-      console.log("Logged in", response.data);
-      
-      toast.success("Login Successful")
-
-      const userdata: any = await axios.post("/api/fetchEmail", {
-        email: loginUser.email,
-      });
-      const userid = userdata.data.user._id;
-
-      router.push(`/${userid}`);
-
-      setLoginUser({
-        email: "",
-        password: "",
-      });
-    } catch (error: any) {
-      console.log(error.message);
-      toast.error("Something went wrong");
+    if (validateSignUp()) {
+      try {
+        setLoginLoading(true);
+        const response = await axios.post("/api/login", loginUser);
+        setLoginLoading(false);
+        const userdata: any = await axios.post("/api/fetchEmail", {
+          email: loginUser.email,
+        });
+        const userid = userdata.data.user._id;
+        toast.success("Login Successful");
+        setTimeout(() => {
+          router.push(`/${userid}`);
+        }, 2000);
+        setLoginUser({
+          email: "",
+          password: "",
+        });
+      } catch (error: any) {
+        toast.error(error.response?.data?.error || "Something went wrong");
+        console.log(error);
+      } finally {
+        setLoginLoading(false);
+      }
     }
   };
 
   return (
     <div className="flex flex-col justify-center items-center h-screen">
+      <Toaster
+        position="bottom-right"
+        toastOptions={{
+          className: "",
+          duration: 4000,
+          style: {
+            background: "white",
+            color: "black",
+          },
+        }}
+      />
       <Navbar_landing className="fixed top-0" />
-      <Suspense fallback={<Loading/>}>
+      <Suspense fallback={<Loading />}>
         <Tabs defaultValue="login" className="md:w-[400px] w-[300px]">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="login">Login</TabsTrigger>
@@ -128,6 +184,9 @@ const Login = () => {
                       setLoginUser({ ...loginUser, email: e.target.value });
                     }}
                   />
+                  {errors.email && (
+                    <p className="text-sm text-red-400">{errors.email}</p>
+                  )}
                 </div>
                 <div className="space-y-1">
                   <Label htmlFor="username">Password</Label>
@@ -139,6 +198,9 @@ const Login = () => {
                       setLoginUser({ ...loginUser, password: e.target.value });
                     }}
                   />
+                  {errors.password && (
+                    <p className="text-sm text-red-400">{errors.password}</p>
+                  )}
                 </div>
                 <div className="space-y-1 flex justify-between text-sm text-muted-foreground items-center pt-1">
                   <div className="space-x-2">
@@ -149,7 +211,9 @@ const Login = () => {
                 </div>
               </CardContent>
               <CardFooter>
-                <Button onClick={handleLogin}>Login</Button>
+                <Button onClick={handleLogin}>
+                  {loginLoading ? "Loading..." : "Login"}
+                </Button>
               </CardFooter>
             </Card>
           </TabsContent>
@@ -165,55 +229,62 @@ const Login = () => {
                   <Input
                     id="email"
                     type="email"
+                    required
                     value={signupUser.email}
                     onChange={(e) => {
                       setSignupUser({ ...signupUser, email: e.target.value });
                     }}
                   />
+                  {errors.email && (
+                    <p className="text-sm text-red-400">{errors.email}</p>
+                  )}
                 </div>
                 <div className="space-y-1">
                   <Label htmlFor="username">Username</Label>
                   <Input
                     id="username"
                     type="text"
+                    required
                     value={signupUser.username}
                     onChange={(e) => {
-                      setSignupUser({ ...signupUser, username: e.target.value });
+                      setSignupUser({
+                        ...signupUser,
+                        username: e.target.value,
+                      });
                     }}
                   />
+                  {errors.username && (
+                    <p className="text-sm text-red-400">{errors.username}</p>
+                  )}
                 </div>
                 <div className="space-y-1">
                   <Label htmlFor="password">Password</Label>
                   <Input
                     id="password"
                     type="password"
+                    required
                     value={signupUser.password}
                     onChange={(e) => {
-                      setSignupUser({ ...signupUser, password: e.target.value });
+                      setSignupUser({
+                        ...signupUser,
+                        password: e.target.value,
+                      });
                     }}
                   />
+                  {errors.password && (
+                    <p className="text-sm text-red-400">{errors.password}</p>
+                  )}
                 </div>
               </CardContent>
               <CardFooter>
                 <Button onClick={handleSignup} disabled={btnDisabled}>
-                  Signup
+                  {signUpLoading ? "Loading..." : "Signup"}
                 </Button>
               </CardFooter>
             </Card>
           </TabsContent>
         </Tabs>
       </Suspense>
-      <Toaster
-        position="bottom-right"
-        toastOptions={{
-          className: "",
-          duration: 4000,
-          style: {
-            background: "white",
-            color: "black",
-          },
-        }}
-      />
       <div className="absolute bottom-10 text-sm text-muted-foreground">
         <p>2024 &copy; MoneyMystery. All rights reserved</p>
       </div>
