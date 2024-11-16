@@ -5,18 +5,15 @@ import { FaFacebook, FaLinkedin, FaInstagram } from "react-icons/fa";
 export default function Footer() {
   return (
     <footer className="py-14 px-10 md:px-20 text-sm text-gray-600 bg-[#dad7cd] tracking-wide h-fit">
-      
       <div className="flex flex-col md:flex-row justify-between items-center gap-12 border-b border-purple pb-8">
-        
         <div className="desc self-start w-full md:w-[50%]">
           <div className="logo">
             <Image src="/mm_black.png" alt="Logo" height={100} width={160} />
           </div>
           <div className="text mt-4">
             <p className="leading-6">
-              Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-              Doloremque porro amet quam voluptatum veritatis nulla quas
-              cupiditate facilis culpa reprehenderit!
+              MoneyMystery: Track expenses, manage budgets, and uncover insights
+              for better financial decisions.
             </p>
           </div>
         </div>
@@ -38,7 +35,6 @@ export default function Footer() {
             <FaInstagram size={25} className="icon_hover" />
           </div>
         </div>
-        
       </div>
 
       <div className="cc">
@@ -46,7 +42,6 @@ export default function Footer() {
           &copy; 2024 MoneyMystery. All rights reserved
         </p>
       </div>
-      
     </footer>
   );
 }
