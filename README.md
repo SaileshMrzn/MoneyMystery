@@ -1,1 +1,1 @@
-All rights reserved. MoneyMystery | 2024
+Live link: https://money-mystery.vercel.app/
